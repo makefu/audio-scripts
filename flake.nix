@@ -11,23 +11,23 @@
         pname = "audio-tools";
         version = "2024-05-21";
         src = ./.;
-        buildInputs = with pkgs; [yt-dlp id3v2 dos2unix imagemagick ];
+        buildInputs = with pkgs; [ 
+          yt-dlp id3v2 dos2unix imagemagick abcde glyr id3lib lame 
+          python3.pkgs.mutagen
+        ];
         nativeBuildInputs = [ pkgs.makeWrapper ];
         installPhase = ''
           mkdir -p $out/bin
-          find
-          exit 1
-          for i in $src/bin/*;do
-            install -m0755 "$i" -D "$out/bin"
-            wrapProgram "$out/bin/$i" \
-              --prefix PATH : ${pkgs.lib.makeBinPath buildInputs }
+          for i in "$src/bin/"*;do
+            install -m0755 "$i" -t "$out/bin"
+            wrapProgram "$out/bin/$(basename "$i")" \
+              --prefix PATH : ${pkgs.lib.makeBinPath buildInputs}
           done
         '';
       };
       devShell = pkgs.mkShell {
-        inputsFrom = [ self.packages.default ];
-        buildInputs = with pkgs; [
-        ];
+        inputsFrom = [ self.packages.${system}.default ];
+        buildInputs = with pkgs; [ ];
       };
     }
   );
