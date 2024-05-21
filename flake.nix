@@ -13,7 +13,7 @@
         src = ./.;
         buildInputs = with pkgs; [ 
           yt-dlp id3v2 dos2unix imagemagick abcde glyr id3lib lame 
-          python3.pkgs.mutagen jq
+          python3.pkgs.mutagen jq iconv
         ];
         nativeBuildInputs = [ pkgs.makeWrapper ];
         installPhase = ''
