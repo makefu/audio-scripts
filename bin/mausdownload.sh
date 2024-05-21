@@ -30,7 +30,7 @@ for i in "$OUTDIR/$NAME"*;do
 
 
   this_podcast_date=$(jq -r .upload_date *.json)
-  if test "$this_podcast_date" > "$latest_podcast_date";then
+  if test "$this_podcast_date" '>' "$latest_podcast_date";then
     latest_podcast=$name
     latest_podcast_date=$this_podcast_date
     echo "found latest podcast $i ($name @ $this_podcast_date)"
@@ -80,7 +80,7 @@ cat > "$tmp" <<EOF
 #PLAYLIST:Neuste Sendung
 EOF
 ls "$latest_podcast/"*.mp3 >> "$tmp"
-#iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$latest_podcast_playlist"
-#unix2dos "$latest_podcast_playlist" 2>/dev/null
+iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$latest_podcast_playlist"
+unix2dos "$latest_podcast_playlist" 2>/dev/null
 
 echo "all done"
