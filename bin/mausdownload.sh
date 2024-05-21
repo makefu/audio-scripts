@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eux
+set -eu
 FEED=https://kinder.wdr.de/radio/diemaus/audio/diemaus-60/diemaus-60-106.podcast
 NAME='Die Maus zum Hören'
 OUTDIR="${1:-$(dirname "$(readlink -f "$0")")/hoerbucher}"
@@ -11,7 +11,7 @@ latest_podcast="no-such-podcast"
 latest_podcast_playlist="aktuelle_maus.m3u"
 
 trap "rm -f '$tmp'" INT TERM EXIT
-#yt-dlp --write-thumbnail --write-description --write-info-json -P "$OUTDIR" -o "$NAME - %(title)s/Podcast.%(ext)s" "$FEED"
+yt-dlp --write-thumbnail --write-description --write-info-json -P "$OUTDIR" -o "$NAME - %(title)s/Podcast.%(ext)s" "$FEED"
 echo "yt-dlp finished, transforming folders"
 
 for i in "$OUTDIR/$NAME"*;do
@@ -27,9 +27,11 @@ for i in "$OUTDIR/$NAME"*;do
     continue
   fi
 
-  if test "$(jq -r .epoch *.json)" -gt "$latest_podcast_date";then
+  this_podcast_date=$(jq -r .epoch *.json)
+  if test "$this_podcast_date" -gt "$latest_podcast_date";then
     echo "found latest podcast $i"
     latest_podcast=$name
+    latest_podcast_date=$this_podcast_date
   fi
 
   echo "generating cover file"
