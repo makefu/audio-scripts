@@ -1,5 +1,4 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -p imagemagick -p python3.pkgs.mutagen -i bash
+#!/bin/sh
 set -eu
 
 for i in "$@";do

@@ -1,5 +1,4 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -p file imagemagick python3.pkgs.mutagen -i bash
+#!/bin/sh
 
 # find . -mindepth 2 -maxdepth 2 -type d '!' -exec test -e "{}/cover.jpg" ';' -print
 

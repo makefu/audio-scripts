@@ -1,5 +1,4 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -p dos2unix  -i bash
+#!/bin/sh
 cd "${1:-.}"
 tmp=$(mktemp)
 for i in *;do

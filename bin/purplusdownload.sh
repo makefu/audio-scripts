@@ -1,5 +1,4 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -p yt-dlp id3v2 dos2unix imagemagick -i bash
+#!/bin/sh
 set -eu
 FEED=https://www.zdf.de/kinder/purplus/wissendrin-mit-eric-der-purplus-podcast-100.html
 NAME='Pur+ Wissendrin mit Eric'

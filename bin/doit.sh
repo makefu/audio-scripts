@@ -1,5 +1,4 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -p abcde glyr id3lib id3v2 lame -i bash
+#!/bin/sh
 set -eu
 
 export ABCDETEMPDIR=$PWD
