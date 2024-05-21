@@ -16,6 +16,7 @@ echo "yt-dlp finished, transforming folders"
 
 for i in "$OUTDIR/$NAME"*;do
   name=$(basename "$i")
+  m3ufile="$name".m3u
   title=$(echo "$name" |sed "s/$NAME - //")
   echo "handling $name"
   cd "$i"
@@ -27,6 +28,7 @@ for i in "$OUTDIR/$NAME"*;do
     continue
   fi
 
+
   this_podcast_date=$(jq -r .epoch *.json)
   if test "$this_podcast_date" -gt "$latest_podcast_date";then
     echo "found latest podcast $i"
@@ -34,6 +36,10 @@ for i in "$OUTDIR/$NAME"*;do
     latest_podcast_date=$this_podcast_date
   fi
 
+  if test -e cover.jpg;then
+    echo "$m3ufile already exists, skipping album"
+    continue
+  fi
   echo "generating cover file"
   rm -f cover_resized.jpg
   test -e cover.jpg || mv -v *.jpg cover.jpg
@@ -48,7 +54,6 @@ for i in "$OUTDIR/$NAME"*;do
 
   echo "genm3u for folder $name"
   rm -f *.m3u
-  m3ufile="$name".m3u
   # ISO8859-1 is required for sonos to correctly load the playlist
   cat > "$tmp" <<EOF
 #EXTM3U
