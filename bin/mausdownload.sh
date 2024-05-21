@@ -1,11 +1,17 @@
 #!/bin/sh
-set -eu
+set -eux
 FEED=https://kinder.wdr.de/radio/diemaus/audio/diemaus-60/diemaus-60-106.podcast
 NAME='Die Maus zum Hören'
 OUTDIR="${1:-$(dirname "$(readlink -f "$0")")/hoerbucher}"
 tmp=$(mktemp)
+
+# find the latest podcast and create a file in the output directory
+latest_podcast_date=0
+latest_podcast="no-such-podcast"
+latest_podcast_playlist="aktuelle_maus.m3u"
+
 trap "rm -f '$tmp'" INT TERM EXIT
-yt-dlp --write-thumbnail --write-description --write-info-json -P "$OUTDIR" -o "$NAME - %(title)s/Podcast.%(ext)s" "$FEED"
+#yt-dlp --write-thumbnail --write-description --write-info-json -P "$OUTDIR" -o "$NAME - %(title)s/Podcast.%(ext)s" "$FEED"
 echo "yt-dlp finished, transforming folders"
 
 for i in "$OUTDIR/$NAME"*;do
@@ -21,6 +27,12 @@ for i in "$OUTDIR/$NAME"*;do
     continue
   fi
 
+  if test "$(jq -r .epoch *.json)" -gt "$latest_podcast_date";then
+    echo "found latest podcast $i"
+    latest_podcast=$name
+  fi
+
+  echo "generating cover file"
   rm -f cover_resized.jpg
   test -e cover.jpg || mv -v *.jpg cover.jpg
 
@@ -50,5 +62,17 @@ EOF
   echo "finished $i"
   cd - >/dev/null 2>&1
 done
+
+cd "$OUTDIR"
+echo "creating playlist with latest podcast"
+cat > "$tmp" <<EOF
+#EXTM3U
+#EXTENC: ISO8859-1
+#EXTIMG:cover.jpg
+#PLAYLIST:Neuste Sendung ${latest_podcast}
+EOF
+ls "$latest_podcast/"*.mp3 >> "$tmp"
+iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$latest_podcast_playlist"
+unix2dos "$latest_podcast_playlist" 2>/dev/null
 
 echo "all done"
