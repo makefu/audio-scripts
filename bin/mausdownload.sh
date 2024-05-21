@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -xeu
 FEED=https://kinder.wdr.de/radio/diemaus/audio/diemaus-60/diemaus-60-106.podcast
 NAME='Die Maus zum Hören'
 OUTDIR="${1:-$(dirname "$(readlink -f "$0")")/hoerbucher}"
@@ -29,15 +29,16 @@ for i in "$OUTDIR/$NAME"*;do
   fi
 
 
-  this_podcast_date=$(jq -r .epoch *.json)
-  if test "$this_podcast_date" -gt "$latest_podcast_date";then
-    echo "found latest podcast $i"
+  this_podcast_date=$(jq -r .upload_date *.json)
+  if test "$this_podcast_date" > "$latest_podcast_date";then
     latest_podcast=$name
     latest_podcast_date=$this_podcast_date
+    echo "found latest podcast $i ($name @ $this_podcast_date)"
   fi
 
   if test -e cover.jpg;then
     echo "$m3ufile already exists, skipping album"
+    cd -
     continue
   fi
   echo "generating cover file"
@@ -76,10 +77,10 @@ cat > "$tmp" <<EOF
 #EXTM3U
 #EXTENC: ISO8859-1
 #EXTIMG:cover.jpg
-#PLAYLIST:Neuste Sendung ${latest_podcast}
+#PLAYLIST:Neuste Sendung
 EOF
 ls "$latest_podcast/"*.mp3 >> "$tmp"
-iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$latest_podcast_playlist"
-unix2dos "$latest_podcast_playlist" 2>/dev/null
+#iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$latest_podcast_playlist"
+#unix2dos "$latest_podcast_playlist" 2>/dev/null
 
 echo "all done"
