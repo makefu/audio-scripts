@@ -1,9 +1,8 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -p yt-dlp id3v2 dos2unix imagemagick -i bash
+#!/bin/sh
 set -eu
 FEED=https://kinder.wdr.de/radio/diemaus/audio/diemaus-60/diemaus-60-106.podcast
 NAME='Die Maus zum Hören'
-OUTDIR="$(dirname "$(readlink -f "$0")")"/hoerbucher
+OUTDIR="${1:-$(dirname "$(readlink -f "$0")")/hoerbucher}"
 tmp=$(mktemp)
 trap "rm -f '$tmp'" INT TERM EXIT
 yt-dlp --write-thumbnail --write-description --write-info-json -P "$OUTDIR" -o "$NAME - %(title)s/Podcast.%(ext)s" "$FEED"
