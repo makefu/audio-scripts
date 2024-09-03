@@ -3,9 +3,10 @@ set -eu
 FEED=https://www.zdf.de/kinder/purplus/wissendrin-mit-eric-der-purplus-podcast-100.html
 NAME='Pur+ Wissendrin mit Eric'
 OUTDIR="$(dirname "$(readlink -f "$0")")"/hoerbucher
+archive_file=$OUTDIR/purplus.txt
 tmp=$(mktemp)
 trap "rm -f '$tmp'" INT TERM EXIT
-yt-dlp --write-thumbnail --write-description --write-info-json -P "$OUTDIR" -o "$NAME - %(title)s/Podcast.%(ext)s" "$FEED"
+yt-dlp --download-archive "$archive_file" --write-thumbnail --write-description --write-info-json -P "$OUTDIR" -o "$NAME - %(title)s/Podcast.%(ext)s" "$FEED"
 echo "yt-dlp finished, transforming folders"
 
 for i in "$OUTDIR/$NAME"*;do

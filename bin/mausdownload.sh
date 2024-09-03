@@ -9,9 +9,10 @@ tmp=$(mktemp)
 latest_podcast_date=0
 latest_podcast="no-such-podcast"
 latest_podcast_playlist="aktuelle_maus.m3u"
+archive_file=$OUTDIR/mausdownload.txt
 
 trap "rm -f '$tmp'" INT TERM EXIT
-yt-dlp --write-thumbnail --write-description --write-info-json -P "$OUTDIR" -o "$NAME - %(title)s/Podcast.%(ext)s" "$FEED"
+yt-dlp --download-archive "$archive_file" --write-thumbnail --write-description --write-info-json -P "$OUTDIR" -o "$NAME - %(title)s/Podcast.%(ext)s" "$FEED"
 echo "yt-dlp finished, transforming folders"
 
 for i in "$OUTDIR/$NAME"*;do
