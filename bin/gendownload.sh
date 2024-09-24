@@ -1,15 +1,15 @@
 #!/bin/sh
 set -eu
-FEED=https://kinder.wdr.de/radio/diemaus/audio/diemaus-60/diemaus-60-106.podcast
-NAME='Die Maus zum Hören'
-OUTDIR="${1:-$(dirname "$(readlink -f "$0")")/hoerbucher}"
+OUTDIR="${1?must provide outdir}"
+NAME="${2?must provide name}"
+FEED="${3?must provide feed url}"
 tmp=$(mktemp)
 
 # find the latest podcast and create a file in the output directory
 latest_podcast_date=0
 latest_podcast="no-such-podcast"
-latest_podcast_playlist="aktuelle_maus.m3u"
-archive_file=$OUTDIR/mausdownload.txt
+latest_podcast_playlist="aktuelle_folge.m3u"
+archive_file=$OUTDIR/archive.txt
 
 trap "rm -f '$tmp'" INT TERM EXIT
 yt-dlp --download-archive "$archive_file" --write-thumbnail --write-description --write-info-json -P "$OUTDIR" -o "$NAME - %(title)s/Podcast.%(ext)s" "$FEED"
