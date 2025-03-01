@@ -44,7 +44,7 @@ for i in "$OUTDIR/$NAME"*;do
   fi
   echo "generating cover file"
   rm -f cover_resized.jpg
-  test -e cover.jpg || mv -v *.jpg cover.jpg
+  test -e cover.jpg || mv -v *.jp*g cover.jpg
 
   convert cover.jpg -resize 350x350 cover_resized.jpg
 
