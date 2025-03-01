@@ -37,16 +37,32 @@ for i in "$OUTDIR/$NAME"*;do
     echo "found latest podcast $i ($name @ $this_podcast_date)"
   fi
 
-  if test -e cover.jpg;then
-    echo "$m3ufile already exists, skipping album"
-    cd -
-    continue
-  fi
+  #if test -e cover.jpg;then
+  #  echo "$m3ufile already exists, skipping album"
+  #  cd -
+  #  continue
+  #fi
+
+  echo "genm3u for folder $name"
+  rm -f *.m3u *.m3u8
+  # ISO8859-1 is required for sonos to correctly load the playlist (not anymore
+  cat > "$tmp" <<EOF
+#EXTM3U
+#EXTIMG:cover.jpg
+#PLAYLIST:${name}
+EOF
+  ls *.mp3 >> "$tmp"
+
   echo "generating cover file"
   rm -f cover_resized.jpg
+  if ! ls *.jp*g; then
+    echo "[WW] found no images in folder $OUTDIR/$NAME, skipping cover generatin"
+    continue
+  fi
   test -e cover.jpg || mv -v *.jp*g cover.jpg
 
   convert cover.jpg -resize 350x350 cover_resized.jpg
+  cp cover_resized.jpg folder.jpg
 
   for j in *.mp3;do
     echo "Injecting cover into $j"
@@ -54,19 +70,9 @@ for i in "$OUTDIR/$NAME"*;do
     mid3v2 -a "$NAME" -A "$title | $NAME" -t "$title" -p "cover_resized.jpg" "$j" 
   done
 
-  echo "genm3u for folder $name"
-  rm -f *.m3u
-  # ISO8859-1 is required for sonos to correctly load the playlist
-  cat > "$tmp" <<EOF
-#EXTM3U
-#EXTENC: ISO8859-1
-#EXTIMG:cover.jpg
-#PLAYLIST:${name}
-EOF
-  ls *.mp3 >> "$tmp"
-  iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$m3ufile"
+  #iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$m3ufile"
       
-  unix2dos "$m3ufile" 2>/dev/null
+  #unix2dos "$m3ufile" 2>/dev/null
 
   echo "finished $i"
   cd - >/dev/null 2>&1
@@ -76,12 +82,11 @@ cd "$OUTDIR"
 echo "creating playlist with latest podcast"
 cat > "$tmp" <<EOF
 #EXTM3U
-#EXTENC: ISO8859-1
 #EXTIMG:cover.jpg
 #PLAYLIST:Neuste Sendung
 EOF
 ls "$latest_podcast/"*.mp3 >> "$tmp"
-iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$latest_podcast_playlist"
-unix2dos "$latest_podcast_playlist" 2>/dev/null
+#iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$latest_podcast_playlist"
+#unix2dos "$latest_podcast_playlist" 2>/dev/null
 
 echo "all done"
