@@ -37,18 +37,19 @@ for i in "$OUTDIR/$NAME"*;do
     echo "found latest podcast $i ($name @ $this_podcast_date)"
   fi
 
-  #if test -e cover.jpg;then
-  #  echo "$m3ufile already exists, skipping album"
-  #  cd -
-  #  continue
-  #fi
+  if test -e folder.jpg;then
+    echo "$m3ufile already exists, skipping album"
+    cd -
+    continue
+  fi
 
   echo "genm3u for folder $name"
   rm -f *.m3u *.m3u8
   # ISO8859-1 is required for sonos to correctly load the playlist (not anymore
   cat > "$tmp" <<EOF
 #EXTM3U
-#EXTIMG:cover.jpg
+#EXTENC: ISO8859-1
+#EXTIMG:folder.jpg
 #PLAYLIST:${name}
 EOF
   ls *.mp3 >> "$tmp"
@@ -70,9 +71,9 @@ EOF
     mid3v2 -a "$NAME" -A "$title | $NAME" -t "$title" -p "cover_resized.jpg" "$j" 
   done
 
-  #iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$m3ufile"
+  iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$m3ufile"
       
-  #unix2dos "$m3ufile" 2>/dev/null
+  unix2dos "$m3ufile" 2>/dev/null
 
   echo "finished $i"
   cd - >/dev/null 2>&1
@@ -82,11 +83,12 @@ cd "$OUTDIR"
 echo "creating playlist with latest podcast"
 cat > "$tmp" <<EOF
 #EXTM3U
-#EXTIMG:cover.jpg
+#EXTENC: ISO8859-1
+#EXTIMG:$latest_podcast/folder.jpg
 #PLAYLIST:Neuste Sendung
 EOF
 ls "$latest_podcast/"*.mp3 >> "$tmp"
-#iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$latest_podcast_playlist"
-#unix2dos "$latest_podcast_playlist" 2>/dev/null
+iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$latest_podcast_playlist"
+unix2dos "$latest_podcast_playlist" 2>/dev/null
 
 echo "all done"
