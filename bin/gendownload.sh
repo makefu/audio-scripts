@@ -25,7 +25,7 @@ for i in "$OUTDIR/"*.info.json;do
   fi
   echo touch -a -m -t "${this_podcast_date}1200" "$audiofile"
   touch -t "${this_podcast_date}1200" "$audiofile"
-  convert "${base_file}.jpeg" -resize 600x600 "${base_file}.cover.jpg"
+  convert "${base_file}".jp*g -resize 600x600 "${base_file}.cover.jpg"
   mid3v2 --delete-frames=APIC --TPE2 "$NAME" -a "$NAME" -A "$NAME" -t "$name" -p "${base_file}.cover.jpg" "$audiofile" 
 
 done
