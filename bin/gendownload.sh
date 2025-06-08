@@ -15,7 +15,7 @@ echo "yt-dlp finished, transforming folders"
 
 for i in "$OUTDIR/"*.info.json;do
   base_file=${i//.info.json}
-  name=$(basename "$base_file" | cut -d"_" -f2- )
+  name=$(basename "$base_file" | cut -d" " -f2- )
   this_podcast_date=$(jq -r .upload_date "$i")
   audiofile=${base_file}.mp3
   echo "handling $name"
@@ -25,13 +25,18 @@ for i in "$OUTDIR/"*.info.json;do
   fi
   echo touch -a -m -t "${this_podcast_date}1200" "$audiofile"
   touch -t "${this_podcast_date}1200" "$audiofile"
-  convert "${base_file}".jp*g -resize 600x600 "${base_file}.cover.jpg"
-  mid3v2 --delete-frames=APIC --TPE2 "$NAME" -a "$NAME" -A "$NAME" -t "$name" -p "${base_file}.cover.jpg" "$audiofile" 
+  if test -e "${base_file}".jp*g;then
+    echo "converting and adding cover"
+    convert "${base_file}".jp*g -resize 600x600 "${base_file}.cover.jpg"
+    mid3v2 --delete-frames=APIC --TPE2 "$NAME" -a "$NAME" -A "$NAME" -t "$name" -p "${base_file}.cover.jpg" "$audiofile" 
+  else
+    echo "no cover,continuing"
+  fi
 
 done
 
 echo "creating playlist with latest podcast"
-latest_podcast=$(ls -1 "$OUTDIR"/*.mp3 | sort -n| head -n1)
+latest_podcast=$(ls -1 "$OUTDIR"/*.mp3 | sort -n| tail -n1)
 latest_podcast_name=$(basename "${latest_podcast//.mp3}")
 
 cat > "$tmp" <<EOF
