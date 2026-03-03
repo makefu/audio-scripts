@@ -12,5 +12,6 @@ OUTDIR=${1:-/media/silent/music/kinder/podcasts}
 "$HERE/gendownload.sh" "$OUTDIR/welten.entdecken" "Welten Entdecken" 'https://podcast.hr.de/hr2_erzaehlpodcast_kind_2024/podcast.xml'
 "$HERE/gendownload.sh" "$OUTDIR/professorin.domino" "Professorin Domino" 'https://sr-mediathek.de/pcast/feeds/SR1_DO_P/feed.xml'
 "$HERE/gendownload.sh" "$OUTDIR/kakadu" "Kakadu" 'https://www.kakadu.de/kakadu-104.xml'
+"$HERE/gendownload.sh" "$OUTDIR/was.ist.was" "Was ist Was Podcast" 'https://feeds.megaphone.fm/KBBF5520541713'
 #"$HERE/gendownload.sh" "$OUTDIR/" "" ''
 #./gendownload.sh "$OUTDIR/purplus" "Purplus Podcast"  'https://purplus-podcast.podigee.io/feed/mp3'
