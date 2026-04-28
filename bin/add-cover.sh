@@ -13,10 +13,10 @@ wget "$URL" -O "$TMP"
 cover=$DIR/cover.jpg
 cover_resized=$DIR/cover_resized.jpg
 
-convert "$TMP" "$DIR/cover.jpg"
+magick "$TMP" "$DIR/cover.jpg"
 trap 'rm -f "$TMP"' INT TERM EXIT
 
-convert "$cover" -resize 350x350 "$cover_resized"
+magick "$cover" -resize 350x350 "$cover_resized"
 for j in "$DIR/"*.mp3;do
   echo "handling $j"
   mid3v2 -p "$cover_resized" "$j"

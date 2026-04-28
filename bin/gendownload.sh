@@ -27,7 +27,7 @@ for i in "$OUTDIR/"*.info.json;do
   touch -t "${this_podcast_date}1200" "$audiofile"
   if test -e "${base_file}".jp*g;then
     echo "converting and adding cover"
-    convert "${base_file}".jp*g -resize 600x600 "${base_file}.cover.jpg"
+    magick "${base_file}".jp*g -resize 600x600 "${base_file}.cover.jpg"
     mid3v2 --delete-frames=APIC --TPE2 "$NAME" -a "$NAME" -A "$NAME" -t "$name" -p "${base_file}.cover.jpg" "$audiofile" 
   else
     echo "no cover,continuing"

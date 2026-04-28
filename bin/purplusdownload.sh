@@ -25,7 +25,7 @@ for i in "$OUTDIR/$NAME"*;do
   rm -f cover_resized.jpg
   test -e cover.jpg || mv -v *.jpg cover.jpg
 
-  convert cover.jpg -resize 350x350 cover_resized.jpg
+  magick cover.jpg -resize 350x350 cover_resized.jpg
 
   for j in *.mp3;do
     echo "Injecting cover into $j"
