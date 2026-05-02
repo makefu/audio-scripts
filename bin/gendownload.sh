@@ -28,7 +28,7 @@ for i in "$OUTDIR/"*.info.json;do
   if test -e "${base_file}".jp*g;then
     echo "converting and adding cover"
     magick "${base_file}".jp*g -resize 600x600 "${base_file}.cover.jpg"
-    mid3v2 --delete-frames=APIC --TPE2 "$NAME" -a "$NAME" -A "$NAME" -t "$name" -p "${base_file}.cover.jpg" "$audiofile" 
+    mid3v2 --delete-frames=APIC --TPE2 "$NAME" -a "$NAME" -A "$NAME" -t "$name" -p "${base_file}.cover.jpg" "$audiofile"
   else
     echo "no cover,continuing"
   fi
@@ -49,5 +49,7 @@ EOF
 
 iconv  -f UTF-8 -t 'ISO8859-1//TRANSLIT' "$tmp" -o "$latest_podcast_playlist"
 unix2dos "$latest_podcast_playlist" 2>/dev/null
+
+echo "[*] latest podcast is ${latest_odcast_name}"
 
 echo "all done"
